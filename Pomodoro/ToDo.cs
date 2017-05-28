@@ -15,15 +15,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Pomodoro {
 
-    [Serializable]
+    
     public partial class ToDo : Form {
 
-        //public ToDo ToDo;
+        
         public List<string> todos { get; set; }
         public List<int> indeksi { get; set; }
         public List<string> checkedItems { get; set; }
         int total;
         int done;
+        int tempDone;
 
         public ToDo(List<string> Todos, List<string> CheckedItems, Color back, Color font, Color panel) {
 
@@ -39,7 +40,7 @@ namespace Pomodoro {
 
             total = 0;
             done = 0;
-
+          
             checkedItems = new List<string>();
             todos = new List<string>();
 
@@ -73,7 +74,7 @@ namespace Pomodoro {
             foreach(Object o in cblTodo.Items) {
                 total++;
             }
-            foreach(string li in cblTodo.CheckedItems) {
+            foreach(Object o in cblTodo.CheckedItems) {
                 done++;
             }
             lblTotalCounter.Text = total.ToString();
@@ -83,13 +84,12 @@ namespace Pomodoro {
         private void button2_Click(object sender, EventArgs e) {
            
             if(cblTodo.SelectedIndex > -1)
-            deleteAFuckingItem(cblTodo.SelectedItem.ToString());
+            deleteAnItem(cblTodo.SelectedItem.ToString());
            
         }
 
         public void loadItems() {
 
-            //
             foreach(string str in todos) {
                 if(str != null) {
                     cblTodo.Items.Add(str);
@@ -103,8 +103,7 @@ namespace Pomodoro {
             countTotal();
         }
 
-        //###############################################
-        public void deleteAFuckingItem(string text) {
+        public void deleteAnItem(string text) {
 
 
             List<string> obichnaPomoshnaLista = new List<string>();
@@ -115,52 +114,28 @@ namespace Pomodoro {
                 }
             }
 
+            foreach(string li in obichnaPomoshnaLista) {
+                checkedItems.Add(li);
+            }
+
             cblTodo.Items.Clear();
 
-            //se poklopuva
             foreach(string s in obichnaPomoshnaLista) {
                 cblTodo.Items.Add(s);
             }
 
-            foreach(string li in cblTodo.CheckedItems) {
-                checkedItems.Add(li);
-            }
-
             foreach(string s in checkedItems) {
+                if(cblTodo.Items.IndexOf(s) > -1)
                 cblTodo.SetItemChecked(cblTodo.Items.IndexOf(s), true);
             }
 
             countTotal();
         }
-
-
-
-        /* public void loadTasks(string item) {
-             List<string> items = new List<string>();
-             foreach(string li in cblTodo.Items) {
-                 if(!li.ToString().Equals(item))
-                     items.Add(li.ToString());
-             }
-
-             cblTodo.Items.Clear();
-
-             foreach(string s in items) {
-                 cblTodo.Items.Add(s);
-             }
-             todos = items;
-         }
-         */
-        public void deleteTask(int itemNumber) {
-            if(cblTodo.SelectedIndex > -1) {
-                cblTodo.Items.RemoveAt(itemNumber);
-                total--;
-                todos.RemoveAt(itemNumber);
-            }
-        }
-
+        
         private void cblTodo_SelectedIndexChanged(object sender, EventArgs e) {
             int done = cblTodo.CheckedItems.Count;
             lblDoneCounter.Text = done.ToString();
+            countTotal();
         }
 
         private void button3_Click(object sender, EventArgs e) {
@@ -175,20 +150,8 @@ namespace Pomodoro {
                 }
             }
 
-            
-
             DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 
-       /*private void btnSound_Click(object sender, EventArgs e) {
-            //string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-
-            //using(var soundPlayer = new SoundPlayer(path+"\\..\\..\\Resources\\Alarm10.wav")) {
-            using(var soundPlayer = new SoundPlayer(@"C:\Windows\Media\Alarm10.wav")) {
-                soundPlayer.Play();
-            }
-        }*/
-
-        
     }
 }

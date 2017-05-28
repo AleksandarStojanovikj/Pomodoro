@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Pomodoro
 {
-    [Serializable]
+    
     public class DistractionClass
     {
         public string text { get; set; }

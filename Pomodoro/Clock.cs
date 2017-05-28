@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Pomodoro {
 
-    [Serializable]
+    
     class Clock {
         public int minutes { get; set; }
         public int actualSec { get; set; }
         public int showSec { get; set; }
         public bool firstRound;
-
+        public int pomoshniMin;
 
         public Clock() {
             minutes = 25;
@@ -20,9 +20,17 @@ namespace Pomodoro {
             firstRound = true;
         }
 
+        public Clock(int minutes) {
+            this.minutes = minutes;
+            showSec = 0;
+            actualSec = 60;
+            pomoshniMin = minutes;
+            firstRound = true;
+        }
+
         public void clockTick() {
             if(firstRound) {
-                minutes = 24;
+                minutes = minutes-1;
                 firstRound = false;
             }
             checkTransfer();
@@ -47,7 +55,7 @@ namespace Pomodoro {
         }
 
         public void restart() {
-            minutes = 25;
+            minutes = pomoshniMin;
             showSec = 0;
             actualSec = 60;
             firstRound = true;

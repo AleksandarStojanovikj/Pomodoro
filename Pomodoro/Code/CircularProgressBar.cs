@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Pomodoro.Code {
-    [Serializable]
+    
     public partial class CircularProgressBar : UserControl {
         public int progress;
         public Color color = Color.Red;

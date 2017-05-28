@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Pomodoro {
 
-    [Serializable]
+    
     public partial class Distraction : Form {
         public DistractionClass DistractionClass { get; set; }
         public Distraction(Color back, Color front, Color panel) {

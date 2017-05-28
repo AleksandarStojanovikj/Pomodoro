@@ -15,7 +15,7 @@ using System.Runtime.Serialization;
 using System.Media;
 
 namespace Pomodoro {
-    [Serializable]
+   
     public partial class Timer : Form {
 
         public ToDo ToDo;
@@ -24,19 +24,18 @@ namespace Pomodoro {
         public List<string> completedTodos;
         public List<string> checkedItems;
         bool nightMode;
-        bool flag ;
-        //public bool flag;
+        bool flag;
         public int progress;
         public int counter;
         public int tempCounter;
         public bool wasPaused;
         public string FileName;
         public string soundPath;
+        public int countPomodoros;
 
         public Timer() {
             InitializeComponent();
             clock = new Clock();
-            //label2.Text = clock.ToString();            
             todos = new List<string>();
             completedTodos = new List<string>();
             checkedItems = new List<string>();
@@ -51,10 +50,12 @@ namespace Pomodoro {
             this.BackColor = Color.FromArgb(162, 185, 214);
             pbTime.color = Color.FromArgb(56, 93, 122);
             menuStrip1.BackColor = this.BackColor;
+            countPomodoros = 0;
+            
         }
 
         private void btnAddDistraction_Click(object sender, EventArgs e) {
-            Distraction distraction = new Distraction(this.BackColor,pbTime.color,clbDistractions.BackColor);
+            Distraction distraction = new Distraction(this.BackColor, pbTime.color, clbDistractions.BackColor);
             if(distraction.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 clbDistractions.Items.Add(distraction.DistractionClass.text);
             }
@@ -73,44 +74,50 @@ namespace Pomodoro {
 
             if(clock.actualSec == 0 && clock.minutes == 0) {
                 clock.restart();
+                countPomodoros++;
                 if(soundPath == null) {
-                    using(var soundPlayer = new SoundPlayer(@"C:\Windows\Media\Alarm10.wav")) {
+                    soundPath = @"C:\Windows\Media\Alarm10.wav";
+                    using(var soundPlayer = new SoundPlayer(soundPath)) {
                         soundPlayer.Play();
                     }
                 }
                 else {
-                    using(var soundPlayer = new SoundPlayer(@soundPath)) {
+                    using(var soundPlayer = new SoundPlayer(soundPath)) {
                         soundPlayer.Play();
                     }
+                    Pauza pauza = new Pauza(countPomodoros, this.BackColor, pbTime.color, soundPath);
+                    pauza.Show();
                 }
                 label2.Text = clock.ToString();
+
             }
 
-            Task.Factory.StartNew(() => {
-
-                 for(int num = progress; num <= 100; num++) {
-
-                     if(!flag) {
-                         wasPaused = true;
-                     }
-                     else {
-                         new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(this.ProgressUpgrade)).Start(num);
-
-                         if(wasPaused) {
-                             System.Threading.Thread.Sleep(tempCounter);
-                             wasPaused = false;
-                             //counter = tempCounter;
-                         }
-                         else {
-                             System.Threading.Thread.Sleep(counter);
-                         }
-
-                     }
-                 }
-
-             });
+            manageProgressBar(counter, tempCounter, flag);
 
             progress = pbTime.progress;
+        }
+
+        public void manageProgressBar(int counter, int tempCounter, bool flag) {
+            Task.Factory.StartNew(() => {
+
+                for(int num = progress; num <= 100; num++) {
+
+                    if(!flag) {
+                        wasPaused = true;
+                    }
+                    else {
+                        new System.Threading.Thread(new System.Threading.ParameterizedThreadStart(this.ProgressUpgrade)).Start(num);
+
+                        if(wasPaused) {
+                            System.Threading.Thread.Sleep(tempCounter);
+                            wasPaused = false;
+                        }
+                        else {
+                            System.Threading.Thread.Sleep(counter);
+                        }
+                    }
+                }
+            });
         }
 
         public void ProgressUpgrade(object progress) {
@@ -138,13 +145,15 @@ namespace Pomodoro {
             }
         }
 
+
+
         private void Timer_FormClosing(object sender, FormClosingEventArgs e) {
             e.Cancel = true;
             this.Hide();
             this.Parent = null;
         }
 
-       private void saveFile() {
+        private void saveFile() {
             if(FileName == null) {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "ToDo doc file (*.todo)|*.todo";
@@ -168,10 +177,6 @@ namespace Pomodoro {
                 todos = todo.todos;
                 checkedItems = todo.checkedItems;
             }
-                
-        }
-
-        private void Timer_Load(object sender, EventArgs e) {
 
         }
 
@@ -194,15 +199,6 @@ namespace Pomodoro {
             if(colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 this.BackColor = colorDialog1.Color;
             }
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveFile();
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
-            MessageBox.Show("The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are named pomodoros, the plural in English of the Italian word pomodoro (tomato), after the tomato-shaped kitchen timer that Cirillo used as a university student.Closely related to concepts such as timeboxing and iterative and incremental development used in software design, the method has been adopted in pair programming contexts.", "What is Pomodoro?",MessageBoxButtons.OK);
         }
 
         private void soundsToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -228,9 +224,15 @@ namespace Pomodoro {
             }
         }
 
-        
-       
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+            Application.Exit();
+        }
 
-        
+        private void aboutToolStripMenuItem_Click_1(object sender, EventArgs e) {
+            MessageBox.Show("The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are named pomodoros, the plural in English of the Italian word pomodoro (tomato), after the tomato-shaped kitchen timer that Cirillo used as a university student.Closely related to concepts such as timeboxing and iterative and incremental development used in software design, the method has been adopted in pair programming contexts.", "What is Pomodoro?", MessageBoxButtons.OK);
+      
+        }
+
+
     }
 }
