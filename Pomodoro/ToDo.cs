@@ -35,6 +35,7 @@ namespace Pomodoro {
             button1.BackColor = back;
             button2.BackColor = back;
             label1.ForeColor = font;
+            
 
             total = 0;
             done = 0;
@@ -58,7 +59,7 @@ namespace Pomodoro {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            Distraction distraction = new Distraction();
+            Distraction distraction = new Distraction(this.BackColor, this.ForeColor, cblTodo.BackColor);
             if(distraction.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 cblTodo.Items.Add(distraction.DistractionClass.text);
             }

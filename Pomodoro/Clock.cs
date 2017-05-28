@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 
 namespace Pomodoro {
+
     [Serializable]
     class Clock {
         public int minutes { get; set; }
         public int actualSec { get; set; }
         public int showSec { get; set; }
         public bool firstRound;
+
 
         public Clock() {
             minutes = 25;

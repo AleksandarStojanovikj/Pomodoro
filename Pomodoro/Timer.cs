@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System.Media;
 
 namespace Pomodoro {
     [Serializable]
@@ -30,6 +31,7 @@ namespace Pomodoro {
         public int tempCounter;
         public bool wasPaused;
         public string FileName;
+        public string soundPath;
 
         public Timer() {
             InitializeComponent();
@@ -48,6 +50,7 @@ namespace Pomodoro {
             FileName = null;
             this.BackColor = Color.FromArgb(162, 185, 214);
             pbTime.color = Color.FromArgb(56, 93, 122);
+            menuStrip1.BackColor = this.BackColor;
         }
 
         private void btnAddDistraction_Click(object sender, EventArgs e) {
@@ -68,8 +71,18 @@ namespace Pomodoro {
                 timer1.Stop();
             }
 
-            if(pbTime.progress == 100) {
+            if(clock.actualSec == 0 && clock.minutes == 0) {
                 clock.restart();
+                if(soundPath == null) {
+                    using(var soundPlayer = new SoundPlayer(@"C:\Windows\Media\Alarm10.wav")) {
+                        soundPlayer.Play();
+                    }
+                }
+                else {
+                    using(var soundPlayer = new SoundPlayer(@soundPath)) {
+                        soundPlayer.Play();
+                    }
+                }
                 label2.Text = clock.ToString();
             }
 
@@ -129,27 +142,9 @@ namespace Pomodoro {
             e.Cancel = true;
             this.Hide();
             this.Parent = null;
-
-            /*string filepath = @"C:\";
-            string filename = "datasaved.bin";
-            ToDo something = new ToDo();
-
-            // serialize
-            using(FileStream strm = File.OpenWrite(Path.Combine(filepath, filename))) {
-                BinaryFormatter ser = new BinaryFormatter();
-                ser.Serialize(strm, something);
-            }
-
-            // deserialize
-            using(FileStream strm = File.OpenRead(Path.Combine(filepath, filename))) {
-                BinaryFormatter ser = new BinaryFormatter();
-                something = ser.Deserialize(strm) as ToDo;
-            }*/
- 
-
         }
 
-       /* private void saveFile() {
+       private void saveFile() {
             if(FileName == null) {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "ToDo doc file (*.todo)|*.todo";
@@ -161,29 +156,8 @@ namespace Pomodoro {
             if(FileName != null) {
                 using(FileStream fileStream = new FileStream(FileName, FileMode.Create)) {
                     IFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(fileStream, ToDo);
+                    formatter.Serialize(fileStream, this);
                 }
-            }
-        }*/
-
-        private void colorsToolStripMenuItem_Click(object sender, EventArgs e) {
-            if(colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                this.BackColor = colorDialog1.Color;
-            }
-        }
-
-        private void nightModeToolStripMenuItem_Click(object sender, EventArgs e) {
-            nightMode = !nightMode;
-            if(nightMode) {
-                this.BackColor = Color.Gray;
-                pbTime.color = Color.Black;
-                nightModeToolStripMenuItem.Text = "Day Mode";
-            }
-            else {
-                this.BackColor = Color.FromArgb(162,185,214);
-                pbTime.color = Color.FromArgb(56,93,122);
-                nightModeToolStripMenuItem.Text = "Night Mode";
-
             }
         }
 
@@ -200,6 +174,62 @@ namespace Pomodoro {
         private void Timer_Load(object sender, EventArgs e) {
 
         }
+
+        private void nightModeToolStripMenuItem_Click_1(object sender, EventArgs e) {
+            nightMode = !nightMode;
+            if(nightMode) {
+                this.BackColor = Color.Gray;
+                pbTime.color = Color.Black;
+                nightModeToolStripMenuItem.Text = "Day Mode";
+            }
+            else {
+                this.BackColor = Color.FromArgb(162, 185, 214);
+                pbTime.color = Color.FromArgb(56, 93, 122);
+                nightModeToolStripMenuItem.Text = "Night Mode";
+
+            }
+        }
+
+        private void colorsToolStripMenuItem_Click_1(object sender, EventArgs e) {
+            if(colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                this.BackColor = colorDialog1.Color;
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFile();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
+            MessageBox.Show("The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. The technique uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks. These intervals are named pomodoros, the plural in English of the Italian word pomodoro (tomato), after the tomato-shaped kitchen timer that Cirillo used as a university student.Closely related to concepts such as timeboxing and iterative and incremental development used in software design, the method has been adopted in pair programming contexts.", "What is Pomodoro?",MessageBoxButtons.OK);
+        }
+
+        private void soundsToolStripMenuItem_Click(object sender, EventArgs e) {
+            openFile();
+        }
+
+
+        private void openFile() {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Select sound (*.wav)|*.wav|(*.mp3)|*.mp3";
+            openFileDialog.Title = "Select sound";
+            if(openFileDialog.ShowDialog() == DialogResult.OK) {
+                FileName = openFileDialog.FileName;
+                try {
+                    soundPath = Path.GetFullPath(FileName);
+                }
+                catch(Exception ex) {
+                    MessageBox.Show("Could not read file: " + FileName);
+                    FileName = null;
+                    return;
+                }
+                Invalidate(true);
+            }
+        }
+
+        
+       
 
         
     }
