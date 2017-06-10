@@ -18,6 +18,7 @@ namespace Pomodoro {
             showSec = 0;
             actualSec = 60;
             firstRound = true;
+            pomoshniMin = 25;
         }
 
         public Clock(int minutes) {

@@ -13,6 +13,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System.Media;
+using WMPLib;
 
 namespace Pomodoro {
    
@@ -32,6 +33,9 @@ namespace Pomodoro {
         public string FileName;
         public string soundPath;
         public int countPomodoros;
+        WindowsMediaPlayer myplayer;
+        int quantity;
+
 
         public Timer() {
             InitializeComponent();
@@ -51,7 +55,10 @@ namespace Pomodoro {
             pbTime.color = Color.FromArgb(56, 93, 122);
             menuStrip1.BackColor = this.BackColor;
             countPomodoros = 0;
-            
+            myplayer = new WindowsMediaPlayer();
+            btnPauseMusic.BackColor = this.BackColor;
+            btnPauseMusic.ForeColor = Color.White;
+            quantity = 100;
         }
 
         private void btnAddDistraction_Click(object sender, EventArgs e) {
@@ -62,39 +69,65 @@ namespace Pomodoro {
         }
 
         private void btnStartStop_Click(object sender, EventArgs e) {
-            flag = !flag;
-            if(flag) {
-                btnStartStop.Text = "Pause";
-                timer1.Start();
-            }
-            else {
-                btnStartStop.Text = "Start";
-                timer1.Stop();
-            }
 
-            if(clock.actualSec == 0 && clock.minutes == 0) {
-                clock.restart();
+            if (clock.actualSec == 0 && clock.minutes == 0)
+            {
+                /*clock.restart();
+                label2.Text = clock.ToString();
+                btnStartStop.Text = "Start";
+                flag = false;
                 countPomodoros++;
-                if(soundPath == null) {
+                btnPauseMusic.Visible = true;
+                if (soundPath == null)
+                {
                     soundPath = @"C:\Windows\Media\Alarm10.wav";
-                    using(var soundPlayer = new SoundPlayer(soundPath)) {
+
+                    using (var soundPlayer = new SoundPlayer(soundPath))
+                    {
                         soundPlayer.Play();
                     }
                 }
-                else {
-                    using(var soundPlayer = new SoundPlayer(soundPath)) {
-                        soundPlayer.Play();
+                else
+                {
+                    if (soundPath.EndsWith(".wav"))
+                    {
+                        using (var soundPlayer = new SoundPlayer(soundPath))
+                        {
+                            soundPlayer.Play();
+                        }
+                    }
+                    else
+                    {
+                        myplayer.URL = soundPath;
+                        myplayer.controls.play();
                     }
                     Pauza pauza = new Pauza(countPomodoros, this.BackColor, pbTime.color, soundPath);
                     pauza.Show();
                 }
-                label2.Text = clock.ToString();
+                label2.Text = clock.ToString();*/
 
             }
 
-            manageProgressBar(counter, tempCounter, flag);
+            else
+            {
 
-            progress = pbTime.progress;
+                flag = !flag;
+                if (flag)
+                {
+                    btnStartStop.Text = "Pause";
+                    timer1.Start();
+                }
+                else
+                {
+                    btnStartStop.Text = "Start";
+                    timer1.Stop();
+                }
+
+
+                manageProgressBar(counter, tempCounter, flag);
+
+                progress = pbTime.progress;
+            }
         }
 
         public void manageProgressBar(int counter, int tempCounter, bool flag) {
@@ -128,10 +161,50 @@ namespace Pomodoro {
         }
 
         private void timer1_Tick(object sender, EventArgs e) {
-            if(pbTime.progress == 100)
+            if (clock.actualSec == 0 && clock.minutes == 0)
+            {
+                clock.restart();
+                label2.Text = clock.ToString();
+                btnStartStop.Text = "Start";
+                flag = false;
+                countPomodoros++;
+                btnPauseMusic.Visible = true;
+                if (soundPath == null)
+                {
+                        soundPath = @"C:\Users\Public\Music\Sample Music\Kalimba.mp3";
+                        myplayer.URL = soundPath;
+                        myplayer.controls.play();
+                    
+                   /* soundPath = @"C:\Users\Public\Music\Sample Music\Kalimba.mp3";
+                    using (var soundPlayer = new SoundPlayer(soundPath))
+                    {
+                        soundPlayer.Play();
+                    }*/
+                }
+                else
+                {
+                    if (soundPath.EndsWith(".wav"))
+                    {
+                        using (var soundPlayer = new SoundPlayer(soundPath))
+                        {
+                            soundPlayer.Play();
+                        }
+                    }
+                    else
+                    {
+                        myplayer.URL = soundPath;
+                        myplayer.controls.play();
+                    }
+                }
+                Pauza pauza = new Pauza(countPomodoros, this.BackColor, pbTime.color, soundPath);
+                pauza.Show();
                 timer1.Stop();
-            clock.clockTick();
-            label2.Text = clock.ToString();
+            }
+            else
+            {
+                clock.clockTick();
+                label2.Text = clock.ToString();
+            }
 
             if(clock.actualSec % 15 == 0) {
                 tempCounter = 15000;
@@ -145,9 +218,7 @@ namespace Pomodoro {
             }
         }
 
-
-
-        private void Timer_FormClosing(object sender, FormClosingEventArgs e) {
+         private void Timer_FormClosing(object sender, FormClosingEventArgs e) {
             e.Cancel = true;
             this.Hide();
             this.Parent = null;
@@ -205,7 +276,6 @@ namespace Pomodoro {
             openFile();
         }
 
-
         private void openFile() {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Select sound (*.wav)|*.wav|(*.mp3)|*.mp3";
@@ -233,6 +303,39 @@ namespace Pomodoro {
       
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (soundPath.EndsWith(".wav"))
+            {
+                using (var soundPlayer = new SoundPlayer(soundPath))
+                {
+                    soundPlayer.Stop();
+                }
+            }
+            else
+            {
+                myplayer.URL = soundPath;
+                myplayer.controls.stop();
+            }
 
+            btnPauseMusic.Visible = false;
+        }
+
+        private void traToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TransaprencySettings ts = new TransaprencySettings();
+
+            if (ts.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //quantity = ts.quantity;
+                //Invalidate(true);
+                this.Opacity = quantity;
+            }
+        }
+
+        private void Timer_Paint(object sender, PaintEventArgs e)
+        {
+            this.Opacity = quantity;
+        }
     }
 }

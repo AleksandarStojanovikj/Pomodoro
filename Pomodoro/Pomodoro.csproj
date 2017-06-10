@@ -87,6 +87,14 @@
     <Compile Include="ToDo.Designer.cs">
       <DependentUpon>ToDo.cs</DependentUpon>
     </Compile>
+    <Compile Include="TransaprencySettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransaprencySettings.Designer.cs">
+      <DependentUpon>TransaprencySettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WindowsMediaPlayer.cs" />
+    <Compile Include="WMPLib.cs" />
     <EmbeddedResource Include="Code\CircularProgressBar.resx">
       <DependentUpon>CircularProgressBar.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,6 +119,9 @@
     <EmbeddedResource Include="ToDo.resx">
       <DependentUpon>ToDo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TransaprencySettings.resx">
+      <DependentUpon>TransaprencySettings.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -123,6 +134,35 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="MediaPlayer">
+      <Guid>{22D6F304-B0F6-11D0-94AB-0080C74C7E95}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
