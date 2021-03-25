@@ -1,50 +1,53 @@
 # Pomodoro
-Проектна задача по Визуелно Програмирање
+Visual Programming Project Task
 
-Помодоро Апликација
-# 1.	Опис на апликацијата
+Pomodoro Application
+# 1.	Description
 
-Pomodoro е апликација чие што име се заснова на името на соодветната техника која треба да овозможи најефикасно искористување на времето. Правилата со кои се служи техниката се истите оние кои оваа апликација ги побарува, а тие се следните:
+Pomodoro is an application whose name is based on the name of the technique with the same name that should enable the most efficient use of time. The rules used by the technique are the same ones that this application requires, and they are the following:
 
-•	Најди листа на задачи кои сакаш да ги завршиш во текот на денот
+•	Find a to-do list that you want to complete during the day
 
-•	Избери една од нив
+•	Choose one of them
 
-•	Работи на истата се до истекот на тајмерот
+•	Work on it until the timer expires
 
-•	Доколку задачата на која си работел е завршена, означи ја како готова
+•	If the task you worked on is completed, mark it as done
 
-•	Одмори кога ќе поминеш еден Помодоро циклус
+•	Rest when you go through a Pomodoro cycle
 
-•	Повтори го процесот повторно, онолку број на пати колку што е потребно
+•	Repeat the process as many times as needed
 
+## 1.1.      Import project
 
-## 1.1.	 Начин на користење на апликацијата
+Import `Pomodoro.sln` in [Visual Studio](https://visualstudio.microsoft.com/) and start the project.
+
+## 1.2.	 How to use the application
 ![Screenshot](Pictures/p1.png)
 ![Screenshot](Pictures/p2.png)
 ![Screenshot](Pictures/p4.png)
 ![Screenshot](Pictures/p5.png)
 
-# 2.	Опис на решението
+# 2.	Description of the solution
 
 ## •	Circular Progress Bar
-Circular Progress Bar  е custom user control што значи дека може да се постави со drag-and-drop од Toolbox. Во него се progress (за timer-от) кој се користи во двата методи кои што се за исцртување и ажурирање на истиот. Начинот на кој што се употребува е преку Threads кои што се манипулираат преку нивно стартување и паузирање. 
+Circular Progress Bar is a custom user control which means that it can be set by drag-and-drop from the Toolbox. It contains the progress (for the timer) which is used in both methods for drawing and updating it. The way it is used is through Threads which are manipulated by starting and pausing them. 
 ## •	Timer
-Timer класата содржи Progress Bar (pbTime), Timer (timer1), неколку flag-ови (wasPaused, flag, nightMode), menuStrip и неколку листи. Главно во оваа класа се справуваме со event-ите при клик на копчиња, менување на боја и отчукување на timer-от. 
+The `Timer` class contains a Progress Bar (`pbTime`), Timer (`timer1`), several flags (`wasPaused, flag, nightMode`), `menuStrip` and several lists. Mainly in this class we deal with events by clicking buttons, changing colors and ticking off the timer. 
 
 ## •	Clock class
-Clock class е помошна класа во која што чуваме минути и секунди со кои ја симулираме работата на дигитален часовник. Оваа класа се користи за манипулирање на времето кое е поминато во Timer класата. 
+The `Clock` class is an auxiliary class in which we keep minutes and seconds with which we simulate the operation of a digital clock. This class is used to manipulate the time spent in the `Timer` class. 
 
 ## •	Distraction
-Служи за додавање на задачи кои се појавуваат во текот на работата со апликацијата, каде задачите се обични стрингови кои што се додаваат во CheckBox List. 
+It is used to add tasks that appear during the work with the application, where the tasks are ordinary strings that are added to the CheckBox List. 
 
 ## •	ToDo
-Е форма каде што се чуваат задачите кои треба да се извршат во текот на еден Pomodoro циклус. Се чува листа од сите задачи кои ги имаме поставено и кои што сме ги завршиле. Има опција за додавање и бришење на задачите. 
+Is a form where the tasks to be performed during a Pomodoro cycle are stored. A list is kept of all the tasks we have set and completed. There is an option to add and delete tasks. 
 
 ## •	Pauza
-Формата Pauza се појавува откако ќе заврши еден циклус од 25 минути. Постои опција паузата да се започне или да се исклучи формата што би значело откажување на паузата. Дополнително, траењето на паузата е одредено со бројот на помодоро циклуси кои се завршени.
+The `Pauza` form appears after completing a `25` minute cycle. There is an option to start the pause or turn off the form which would mean canceling the pause. Additionally, the duration of the break is determined by the number of pomodoro cycles completed.
 
-# 3.	Опис на одредени функции и класи од изворниот код
+# 3.	Description of certain functions and classes of the source code
 ```c#
 private void btnStartStop_Click(object sender, EventArgs e) {
             flag = !flag;
@@ -88,7 +91,7 @@ private void btnStartStop_Click(object sender, EventArgs e) {
             progress = pbTime.progress;
         }
 ```
-Соодветниот код претставува event handler со кој се управува со timer-от и progress bar-от. Во него се чува flag со кој се проверува дали треба да биде паузиран timer-от или истиот да работи како и progress bar-от. Врз основа на flag-от се ажурира и текстот на копчето.  Во овој дел се справуваме и со паузирањето и повторното стартување на timer-от, во смисол каде што работата на progress bar-от треба или да се паузира или истата да продолжи. За таа цел се користи flag-ot wasPaused и помошната променлива tempCounter која означува уште колку време Thread-от треба да “спие”. 
+The corresponding code is an event handler that manages the timer and the progress bar. It stores a flag that checks whether the timer should be paused or not, just like the progress bar. The text of the button is also updated based on the flag. In this section we also deal with pausing and restarting the timer, in the sense where the progress bar needs to be paused or resumed. The flag `wasPaused` and the auxiliary variable `tempCounter` are used for this purpose, which indicates how much longer the Thread should sleep. 
 
 ```c#
 class Clock {
@@ -153,19 +156,12 @@ class Clock {
 ```
 
 
-Дадениот код е репрезентација на класата Clock. Во неа има функции кои служат за манипулирање на работата на timer-от кој треба да работи со еден Pomodoro циклус, затоа минутите се предефинирани на вредност 25. Функцијата checkTransfer() служи за проверка од потребата на смена на минутите, а доколку истата постои, тогаш се повикува функцијата changeMinute() која е одговорна за акцијата која треба да се превземе. По истекот на тајмерот, потребно е негово рестартирање за кое е одговорна функцијата restart().
+The given code is a representation of the `Clock` class. It has functions that manipulate the operation of the timer that should work with one Pomodoro cycle, so the minutes are predefined to a value of `25`. The `checkTransfer` function is used to check the need to change the minutes, and if it exists, then the `changeMinute` function is called which is responsible for the action to be taken. After the timer expires, it needs to be restarted, for which the `restart` function is responsible.
 
 
 
 
 
-## Изработиле:
-### Марија Трајкова 151047
-### Александар Стојановиќ 151088
-
-
-
-
-
-
-
+## Made by:
+### Marija Trajkova
+### Aleksandar Stojanovikj
